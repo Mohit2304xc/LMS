@@ -31,4 +31,26 @@ class BannerRepository extends GetxController {
       throw 'Something went wrong while fetching banners';
     }
   }
+
+
+  /*Future<void> uploadDummyData(List<BannerModel> banners)async{
+    try{
+      final storage = Get.put(FirebaseStorageService());
+
+      for(var banner in banners){
+        final file = await storage.getImageDataFromAssets(banner.imageURL);
+
+        final url = await storage.uploadImageData('Banners/Images',file);
+
+        banner.imageURL = url;
+        _db.collection("Banners").doc().set(banner.toJson());
+      }
+    } on FirebaseException catch(e){
+      throw FirebaseExceptions(e.code).message;
+    } on PlatformException catch(e){
+      throw PlatformExceptions(e.code).message;
+    } catch(e){
+      throw e.toString();
+    }
+  }*/
 }

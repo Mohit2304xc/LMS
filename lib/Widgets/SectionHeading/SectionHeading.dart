@@ -4,7 +4,7 @@ class SectionHeading extends StatelessWidget {
   const SectionHeading({
     super.key,
     this.onPressed,
-    this.textColor = Colors.white,
+    this.textColor = Colors.black,
     this.showActionButton = true,
     required this.title,
     this.buttonTitle = 'View All',
@@ -22,9 +22,6 @@ class SectionHeading extends StatelessWidget {
       children: [
         Row(
           children: [
-            const SizedBox(
-              width: 20,
-            ),
             Text(
               title,
               style: Theme.of(context)
@@ -37,7 +34,7 @@ class SectionHeading extends StatelessWidget {
           ],
         ),
         if (showActionButton)
-          TextButton(onPressed: onPressed, child: Text(buttonTitle)),
+          TextButton(onPressed: onPressed, child: Text(buttonTitle,style: Theme.of(context).textTheme.titleMedium!.apply(color: Colors.grey[400]),)),
       ],
     );
   }

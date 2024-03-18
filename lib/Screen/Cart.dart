@@ -1,102 +1,137 @@
+import 'package:dummy1/Controller/CartController.dart';
+import 'package:dummy1/Widgets/Animation/AnimationLoaderWidget.dart';
+import 'package:dummy1/Widgets/BottomNavigation/BottomAddToCart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:dummy1/Screen/checkOut.dart';
 import 'package:dummy1/Widgets/Appbar/Appbar.dart';
 import 'package:dummy1/Widgets/BottomNavigation/BottomNavigationBar.dart';
 import 'package:dummy1/Widgets/CarouselSlider/RoundedImage.dart';
 import 'package:dummy1/Widgets/ProductCardVertical/CoursePrice.dart';
 
-import '../Widgets/CartIcon/CircularIcon.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = CartController.instance;
     return Scaffold(
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(24),
-        child: ElevatedButton(
-          onPressed: () {
-            Get.to(() => const CheckoutScreen());
-          },
-          child: const Text("CheckOut"),
-        ),
-      ),
+      bottomNavigationBar: controller.cartItems.isEmpty
+          ? const SizedBox()
+          : Padding(
+              padding: const EdgeInsets.all(24),
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.to(() => const CheckoutScreen());
+                },
+                child: Obx(() =>
+                    Text("CheckOut £${controller.totalCartPrice.value}")),
+              ),
+            ),
       appBar: AppbarMenu(
         showBackArrow: true,
         opacity: 1,
         title: Text(
           "Cart",
-          style: Theme.of(context).textTheme.headlineSmall,
-        ), onPressed: () { Get.to(()=>const NavigationMenu()); },
+          style: Theme.of(context)
+              .textTheme
+              .headlineSmall!
+              .apply(color: Colors.white),
+        ),
+        onPressed: () {
+          Get.to(() => const NavigationMenu());
+        },
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: ListView.separated(
-            shrinkWrap: true,
-            itemBuilder: (_, index) => Column(
+      body: Obx(
+        () {
+          final emptyCart = AnimationLoaderWidget(
+            text: 'Oops! Your Cart is empty',
+            actionText: "Let's fill it.",
+            animation:
+                'assets/images/success/lady-adding-product-in-cart-animation.json',
+            showAction: true,
+            onActionPressed: () => Get.off(() => const NavigationMenu()),
+          );
+          if (controller.cartItems.isEmpty) {
+            return emptyCart;
+          } else {
+            return const SingleChildScrollView(
+              child: Padding(
+                padding:  EdgeInsets.all(24),
+                child: CartItems(showAddRemoveButton: true,),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class CartItems extends StatelessWidget {
+  const CartItems({
+    super.key,
+    required this.showAddRemoveButton,
+  });
+
+  final bool showAddRemoveButton;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = CartController.instance;
+    return Obx(
+      () => ListView.separated(
+          shrinkWrap: true,
+          itemBuilder: (_, index) => Obx(() {
+                final item = controller.cartItems[index];
+                return Column(
                   children: [
                     Row(
                       children: [
-                        const RoundedImage(
+                        RoundedImage(
                           width: 60,
                           height: 60,
+                          isNetworkImage: true,
                           backgroundColor: Colors.white,
-                          image: "assets/images/cloud/AI-Tools-bbb.png",
+                          image: item.image ?? '',
                           applyImageRadius: true,
                           borderRadius: 16,
                         ),
                         const SizedBox(
                           width: 16,
                         ),
-                        Text(
-                          "AI Tools",
-                          style: Theme.of(context).textTheme.headlineMedium,
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Text(
+                                item.title,
+                                style:
+                                    Theme.of(context).textTheme.titleLarge,
+                              ),
+                              if (showAddRemoveButton)
+                                AddToCart(
+                                  quantity: item.quantity,
+                                  add: () => controller.addOneItemToCart(item),
+                                  remove: () =>
+                                      controller.removeOneItemToCart(item),
+                                ),
+                            ],
+                          ),
                         ),
+                        const SizedBox(
+                          width: 30,
+                        ),
+                        CoursePriceText(
+                            price: (item.price * item.quantity)
+                                .toStringAsFixed(1)),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const SizedBox(
-                              width: 70,
-                            ),
-                            CircularIcon(
-                              icon: Iconsax.minus,
-                              width: 40,
-                              height: 40,
-                              backGroundColor: Colors.grey[200],
-                            ),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            Text(
-                              "2",
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            CircularIcon(
-                              icon: Iconsax.add,
-                              width: 40,
-                              height: 40,
-                              backGroundColor: Colors.grey[200],
-                            ),
-                          ],
-                        ),
-                        const CoursePriceText(price: "10"),
-                      ],
-                    )
                   ],
-                ),
-            separatorBuilder: (_, __) => const SizedBox(height: 32),
-            itemCount: 4),
-      ),
+                );
+              }),
+          separatorBuilder: (_, __) => const SizedBox(height: 32),
+          itemCount: controller.cartItems.length),
     );
   }
 }

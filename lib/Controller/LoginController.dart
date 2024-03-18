@@ -68,15 +68,14 @@ class LoginController extends GetxController{
         return;
       }
       final userCredentials = AuthenticationRepository.instance.signInWithGoogle();
-
-      await userController.saveUserRecord(userCredentials as UserCredential?);
-
+      print(userCredentials);
+      await userController.saveUserRecord(userCredentials as UserCredential);
       FullScreenLoader.stopLoading();
       AuthenticationRepository.instance.screenRedirect();
 
     } catch(e){
       FullScreenLoader.stopLoading();
-      SnackBars.ErrorSnackBar(title: "Oh Snap!",message: e.toString());
+      SnackBars.ErrorSnackBar(title: "Oh Snap!",message: 'oh');
     }
   }
 }

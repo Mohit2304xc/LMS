@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class CoursePriceText extends StatelessWidget {
@@ -9,8 +10,9 @@ class CoursePriceText extends StatelessWidget {
       this.isLarge = false,
       this.lineThrough = false});
 
-  final String currencySign, price;
+  final String currencySign;
   final int maxLines;
+  final String price;
   final bool isLarge, lineThrough;
 
   @override

@@ -10,9 +10,11 @@ class LoginHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Image(
-          height: 150,
-          image: AssetImage("assets/images/prabishalogo.jpeg"),
+        const Center(
+          child: Image(
+            height: 150,
+            image: AssetImage("assets/images/prabishalogo.jpeg"),
+          ),
         ),
         Text(
           "Please Provide your email and password",

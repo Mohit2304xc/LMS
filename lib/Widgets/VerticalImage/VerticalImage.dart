@@ -30,13 +30,13 @@ class VerticalImageText extends StatelessWidget {
                   color: Colors.white),
               child: Center(
                 child: Image(
-                  image: AssetImage(image),
+                  image: NetworkImage(image),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
             const SizedBox(
-              height: 8,
+              height: 6,
             ),
             SizedBox(
               width: 56,

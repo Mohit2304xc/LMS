@@ -7,10 +7,11 @@ class CircularIcon extends StatelessWidget {
     this.onPressed,
     this.width,
     this.height,
-    this.backGroundColor,
+    this.backGroundColor, this.color,
   });
 
   final IconData? icon;
+  final Color? color;
   final double? width, height;
   final VoidCallback? onPressed;
   final Color? backGroundColor;
@@ -27,7 +28,7 @@ class CircularIcon extends StatelessWidget {
         onPressed: onPressed,
         icon: Icon(
           icon,
-          color: Colors.red,
+          color: color,
         ),
       ),
     );

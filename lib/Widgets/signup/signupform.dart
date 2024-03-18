@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-//import 'package:dummy1/Controller/SignUpController.dart';
 import 'package:dummy1/Widgets/Validators/Validation.dart';
 
 import '../../Controller/Signupcontroller.dart';
@@ -99,8 +98,8 @@ class SignUpForm extends StatelessWidget {
                       ? Iconsax.eye_slash
                       : Iconsax.eye),
                   onPressed: () {
-                     controller.hidePassword.value =
-                       !controller.hidePassword.value;
+                    controller.hidePassword.value =
+                        !controller.hidePassword.value;
                   },
                 ),
                 prefixIcon: const Icon(Iconsax.password_check),
@@ -115,17 +114,16 @@ class SignUpForm extends StatelessWidget {
               SizedBox(
                 width: 24,
                 height: 2,
-                child: //Obx(
-                    //() =>
-                    Checkbox(
-                  value: controller.privacyPolicy.value,
-                  onChanged: (value) {
-                    controller.privacyPolicy.value =
-                        !controller.privacyPolicy.value;
-                  },
+                child: Obx(
+                  () => Checkbox(
+                    value: controller.privacyPolicy.value,
+                    onChanged: (value) {
+                      controller.privacyPolicy.value =
+                          !controller.privacyPolicy.value;
+                    },
+                  ),
                 ),
               ),
-              //),
               const SizedBox(
                 width: 8,
               ),

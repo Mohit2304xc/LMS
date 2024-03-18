@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 import '../../Controller/LoginController.dart';
-
 
 class SocialButton extends StatelessWidget {
   const SocialButton({
@@ -23,32 +21,15 @@ class SocialButton extends StatelessWidget {
           ),
           child: IconButton(
             onPressed: () {
-              controller.googleSignIn;
-              },
+              controller.googleSignIn();
+            },
             icon: const Image(
                 width: 14,
                 height: 14,
-                image: AssetImage(
-                    "assets/images/loginlogo/download.png")),
-          ),
-        ),
-        const SizedBox(width: 16,),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(100),
-          ),
-          child: IconButton(
-            onPressed: () {},
-            icon: const Image(
-                width: 14,
-                height: 14,
-                image: AssetImage(
-                    "assets/images/loginlogo/download (2).png")),
+                image: AssetImage("assets/images/loginlogo/download (2).png")),
           ),
         ),
       ],
     );
   }
 }
-

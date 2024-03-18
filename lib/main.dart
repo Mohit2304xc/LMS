@@ -1,3 +1,4 @@
+import 'package:dummy1/Dummy_data.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'LMS',
       initialBinding: GeneralBindings(),
+      getPages: AppRoutes.pages,
       theme: ThemeData(primarySwatch: Colors.deepPurple),
       home: const OnboardingScreen(),
       debugShowCheckedModeBanner: false,

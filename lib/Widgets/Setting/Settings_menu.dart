@@ -6,15 +6,17 @@ class SettingsMenu extends StatelessWidget {
       this.title,
       this.subtitle,
       required this.icon,
-      this.trailing});
+      this.trailing, this.onTap});
 
   final String? title, subtitle;
   final IconData icon;
   final Widget? trailing;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onTap,
       leading: Icon(
         icon,
         size: 28,

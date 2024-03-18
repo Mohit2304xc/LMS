@@ -1,86 +1,58 @@
+import 'package:dummy1/Dummy_data.dart';
+import 'package:dummy1/Widgets/Animation/VerticalCourseShimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:dummy1/Controller/CategoryController.dart';
-import 'package:dummy1/Screen/AllProducts.dart';
-import 'package:dummy1/Widgets/Animation/shimmer.dart';
+import 'package:dummy1/Screen/AllPopularProducts.dart';
 import 'package:dummy1/Widgets/ProductCardVertical/CourseCardVertical.dart';
-import 'package:dummy1/Widgets/SubCategory/SubCategory.dart';
+import '../Controller/CategoryController.dart';
+import '../Controller/Course/CourseController.dart';
+import '../Widgets/Animation/CategoryShimmer.dart';
 import '../Widgets/Appbar/HomeAppBar.dart';
 import '../Widgets/CarouselSlider/featuredCourse.dart';
 import '../Widgets/Curved_Edges/PrimaryHeaderContainer.dart';
 import '../Widgets/GridLayout/GridLayout.dart';
+import '../Widgets/PopularCategories/PopularCategories.dart';
 import '../Widgets/SectionHeading/SectionHeading.dart';
+import '../Widgets/SubCategory/SubCategory.dart';
 import '../Widgets/VerticalImage/VerticalImage.dart';
+
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CategoryController());
+    final courseController = Get.put(CourseController());
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PrimaryHeaderContainer(
+            const PrimaryHeaderContainer(
               height: 450,
               child: Column(
                 children: [
-                  const HomeAppBar(),
-                  const SizedBox(
+                  HomeAppBar(),
+                  SizedBox(
                     height: 16,
                   ),
-                  const SearchBar(),
-                  const SizedBox(
+                  SearchBar(),
+                  SizedBox(
                     height: 16,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 24),
+                    padding: EdgeInsets.only(left: 24),
                     child: Column(
                       children: [
-                        const SectionHeading(
+                        SectionHeading(
+                          textColor: Colors.white,
                           showActionButton: false,
                           title: 'Popular Categories',
                         ),
-                        const SizedBox(
+                        SizedBox(
                           height: 16,
                         ),
-                        Obx(() {
-                          if (controller.isLoading.value) {
-                            return  CategoryShimmer(itemCount: controller.featuredCategories.length,);
-                          } else if (controller.featuredCategories.isEmpty) {
-                            return Center(
-                              child: Text(
-                                "No Data Found!",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .apply(color: Colors.white),
-                              ),
-                            );
-                          } else {
-                            return SizedBox(
-                              height: 80,
-                              child: ListView.builder(
-                                itemCount: controller.featuredCategories.length,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (_, index) {
-                                  final category =
-                                      controller.featuredCategories[index];
-                                  return VerticalImageText(
-                                    textColor: Colors.white,
-                                    image: category.image,
-                                    title: category.name,
-                                    onTap: () {
-                                      Get.to(() => const SubCategory());
-                                    },
-                                  );
-                                },
-                              ),
-                            );
-                           }
-                        })
+                        PopularCategories(),
                       ],
                     ),
                   ),
@@ -90,9 +62,12 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            Text(
-              "Featured Courses",
-              style: Theme.of(context).textTheme.headlineMedium,
+            Padding(
+              padding: const EdgeInsets.only(left: 24),
+              child: Text(
+                "Featured Courses",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
             ),
             const SizedBox(
               height: 5,
@@ -104,20 +79,45 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            SectionHeading(
-              title: "Popular Products",
-              showActionButton: true,
-              textColor: Colors.black,
-              onPressed: () => Get.to(() => const AllProducts()),
+            Padding(
+              padding: const EdgeInsets.only(left: 24),
+              child: SectionHeading(
+                title: "Popular Products",
+                showActionButton: true,
+                textColor: Colors.black,
+                onPressed: () => Get.to(
+                  () => AllPopularProducts(
+                    title: 'Popular Courses',
+                    futureMethod: courseController.fetchAllPopularProducts(),
+                  ),
+                ),
+              ),
             ),
             const SizedBox(
               height: 16,
             ),
-            GridLayout(
-              itemCount: 4,
-              itemBuilder: (_, index) => const CoursecardVertical(),
+            GetBuilder<CourseController>(
+              builder: (courseController) {
+                if (courseController.isLoading.value) {
+                  return const VerticalCourseShimmer();
+                }
+                if (courseController.popularProducts.isEmpty) {
+                  courseController.fetchPopularProducts();
+                  return Center(
+                    child: Text(
+                      'Loading...',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  );
+                }
+                return GridLayout(
+                  itemCount: courseController.popularProducts.length,
+                  itemBuilder: (_, index) => CourseCardVertical(
+                    course: courseController.popularProducts[index],
+                  ),
+                );
+              },
             ),
-            const CoursecardVertical(),
           ],
         ),
       ),
@@ -125,34 +125,3 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class CategoryShimmer extends StatelessWidget {
-  const CategoryShimmer({
-    super.key,
-    this.itemCount = 6,
-  });
-
-  final int itemCount;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 80,
-      child: ListView.separated(
-        shrinkWrap: true,
-        itemCount: itemCount,
-        scrollDirection: Axis.horizontal,
-        separatorBuilder: (_, __) => const SizedBox(width: 16),
-        itemBuilder: (_, __) {
-          return const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ShimmerEffect(width: 55, height: 55, radius: 55),
-              SizedBox(height: 8),
-              ShimmerEffect(width: 55, height: 8),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}

@@ -1,136 +1,89 @@
+import 'package:dummy1/Controller/CouponCodeController.dart';
+import 'package:dummy1/Controller/OrderController.dart';
+import 'package:dummy1/Screen/Cart.dart';
+import 'package:dummy1/Widgets/snackbar/Snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:dummy1/Screen/SuccessScreen.dart';
 import 'package:dummy1/Widgets/Appbar/Appbar.dart';
-import 'package:dummy1/Widgets/BottomNavigation/BottomNavigationBar.dart';
 import 'package:dummy1/Widgets/CircularContainer.dart';
-
-import '../Widgets/Billing/PaymentSection.dart';
-import '../Widgets/CarouselSlider/RoundedImage.dart';
-import '../Widgets/CartIcon/CircularIcon.dart';
-import '../Widgets/ProductCardVertical/CoursePrice.dart';
+import '../Controller/CartController.dart';
+import '../Widgets/Billing/AmountSection.dart';
+import '../Widgets/Billing/BillingAddressSection.dart';
+import '../Widgets/Billing/BillingPaymentSection.dart';
 
 class CheckoutScreen extends StatelessWidget {
   const CheckoutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = CartController.instance;
+    final orderController = Get.put(OrderController());
+    final totalAmount = controller.totalCartPrice.value;
     return Scaffold(
       appBar: AppbarMenu(
         showBackArrow: true,
         opacity: 1,
         title: Text(
           "CheckOut",
-          style: Theme.of(context).textTheme.titleLarge,
-        ), onPressed: () { Get.back(); },
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.apply(color: Colors.white),
+        ),
+        onPressed: () {
+          Get.back();
+        },
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(24),
         child: ElevatedButton(
           onPressed: () {
-            Get.to(() => SuccessScreen(
-                title: "Payment Success!",
-                subTitle: "Your Payment has been done",
-                image: "assets/images/success/download.png",
-                onPressed: () => Get.to(() => const NavigationMenu())));
+            orderController.processOrder(totalAmount);
           },
           child: const Text("CheckOut"),
         ),
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             children: [
-              ListView.separated(
-                shrinkWrap: true,
-                itemBuilder: (_, index) => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const RoundedImage(
-                          width: 60,
-                          height: 60,
-                          backgroundColor: Colors.white,
-                          image: "assets/images/cloud/AI-Tools-bbb.png",
-                          applyImageRadius: true,
-                          borderRadius: 16,
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "AI Tools",
-                              style: Theme.of(context).textTheme.headlineMedium,
-                            ),
-                            Row(
-                              children: [
-                                CircularIcon(
-                                  icon: Iconsax.minus,
-                                  width: 40,
-                                  height: 40,
-                                  backGroundColor: Colors.grey[200],
-                                ),
-                                const SizedBox(
-                                  width: 16,
-                                ),
-                                Text(
-                                  "2",
-                                  style: Theme.of(context).textTheme.titleSmall,
-                                ),
-                                const SizedBox(
-                                  width: 16,
-                                ),
-                                CircularIcon(
-                                  icon: Iconsax.add,
-                                  width: 40,
-                                  height: 40,
-                                  backGroundColor: Colors.grey[200],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const CoursePriceText(price: "10"),
-                  ],
-                ),
-                separatorBuilder: (_, __) => const SizedBox(height: 32),
-                itemCount: 4,
-              ),
-              const SizedBox(
+              CartItems(showAddRemoveButton: false),
+              SizedBox(
                 height: 32,
               ),
-              const CouponCode(),
-              const SizedBox(
+              CouponCode(),
+              SizedBox(
                 height: 32,
               ),
-              const CircularContainer(
-                height: 210,
-                radius: 100,
+              CircularContainer(
+                height: 450,
+                width: 400,
+                radius: 10,
                 backgroundColor: Colors.white,
-                child: Column(
-                  children: [
-                    PaymentSection(),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Divider(),
-                    SizedBox(
-                      height: 32,
-                    ),
-                  ],
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      AmountSection(),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Divider(),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      BillingPaymentSection(),
+                      SizedBox(height: 16),
+                      AddressSection(),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ),
-      ),
+      )
     );
   }
 }
@@ -142,6 +95,9 @@ class CouponCode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CouponCodeController());
+    final cartController = Get.put(CartController());
+    var subTotal = cartController.totalCartPrice.value;
     return CircularContainer(
       radius: 100,
       width: 400,
@@ -153,6 +109,7 @@ class CouponCode extends StatelessWidget {
         children: [
           Flexible(
             child: TextFormField(
+              controller: controller.couponController,
               decoration: const InputDecoration(
                 hintText: 'Have a promo code? Enter here',
                 border: InputBorder.none,
@@ -166,7 +123,11 @@ class CouponCode extends StatelessWidget {
           SizedBox(
             width: 90,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                final afterDiscount = controller.applyCoupon(context,subTotal);
+                cartController.updateFinalAmount(afterDiscount);
+                SnackBars.SuccessSnackBar(title: 'Coupon has been applied!');
+              },
               style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black.withOpacity(0.5),
                   backgroundColor: Colors.grey.withOpacity(0.2),

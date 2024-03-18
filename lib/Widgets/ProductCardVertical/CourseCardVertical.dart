@@ -1,19 +1,33 @@
+import 'package:dummy1/Controller/Course/CourseController.dart';
+import 'package:dummy1/Model/CourseModel.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:get/get.dart';
 import 'package:dummy1/Widgets/CarouselSlider/RoundedImage.dart';
 import 'package:dummy1/Widgets/CircularContainer.dart';
 import 'package:dummy1/Widgets/ProductCardVertical/CoursePrice.dart';
-
-import '../CartIcon/CircularIcon.dart';
+import '../Course/CourseAddToCart.dart';
+import '../Course/CourseDetail.dart';
+import '../FavouriteIcon/FavouriteIcon.dart';
 import 'Details.dart';
 
-class CoursecardVertical extends StatelessWidget {
-  const CoursecardVertical({super.key});
+class CourseCardVertical extends StatelessWidget {
+  const CourseCardVertical({super.key, required this.course});
+
+  final CourseModel course;
 
   @override
   Widget build(BuildContext context) {
+    final controller = CourseController.instance;
+    final salePercentage =
+        controller.calculateSalePercentage(course.price, course.salePrice);
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Get.to(
+          () => CourseDetail(
+            course: course,
+          ),
+        );
+      },
       child: Container(
         width: 180,
         padding: const EdgeInsets.all(1),
@@ -31,35 +45,39 @@ class CoursecardVertical extends StatelessWidget {
           children: [
             CircularContainer(
               height: 180,
-              padding: const EdgeInsets.all(4.0),
+              radius: 15,
+              padding: const EdgeInsets.only(right: 4.0,left: 4),
               child: Stack(
                 children: [
-                  const RoundedImage(
-                      image: "assets/images/cloud/aws.png",
-                      applyImageRadius: true,
-                      borderRadius: 16),
-                  Positioned(
-                    top: 0,
-                    child: CircularContainer(
-                      width: 45,
-                      height: 30,
-                      radius: 8,
-                      backgroundColor: Colors.red.withOpacity(0.8),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      child: Text(
-                        "25%",
-                        style: Theme.of(context).textTheme.labelLarge!.apply(
-                              color: Colors.black,
-                            ),
+                  RoundedImage(
+                    image: course.thumbnail,
+                    applyImageRadius: true,
+                    borderRadius: 16,
+                    isNetworkImage: true,
+                  ),
+                  if (salePercentage != null)
+                    Positioned(
+                      top: 0,
+                      child: CircularContainer(
+                        width: 45,
+                        height: 30,
+                        radius: 8,
+                        backgroundColor: Colors.red.withOpacity(0.8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        child: Text(
+                          '$salePercentage%',
+                          style: Theme.of(context).textTheme.labelLarge!.apply(
+                                color: Colors.black,
+                              ),
+                        ),
                       ),
                     ),
-                  ),
-                  const Positioned(
+                  Positioned(
                     top: 0,
                     right: 0,
-                    child: CircularIcon(
-                      icon: Iconsax.heart5,
+                    child: FavouriteIcon(
+                      courseId: course.id,
                     ),
                   )
                 ],
@@ -68,31 +86,31 @@ class CoursecardVertical extends StatelessWidget {
             const SizedBox(
               height: 8,
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 8),
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
               child: DetailsForVerticalCard(
-                title: 'AWS',
+                title: course.title,
                 smallSize: true,
                 maxLines: 2,
               ),
             ),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const CoursePriceText(price: "10"),
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      bottomRight: Radius.circular(16),
+                Row(
+                  children: [
+                    CoursePriceText(
+                      price: controller.getOriginalProductPrice(course),
+                      lineThrough: true,
                     ),
-                  ),
-                  child: const SizedBox(
-                      width: 24 * 1.2,
-                      height: 24 * 1.2,
-                      child: Icon(Iconsax.add, color: Colors.white)),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    CoursePriceText(price: controller.getProductPrice(course)),
+                  ],
+                ),
+                CourseAddToCart(
+                  course: course,
                 ),
               ],
             )

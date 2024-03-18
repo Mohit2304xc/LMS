@@ -40,7 +40,7 @@ class VerifyEmailController extends GetxController {
             () => SuccessScreen(
               title: "Congratulations",
               subTitle: "Your Email has been Verified",
-              image: "assets/images/success/72462-check-register.json",
+              image: "assets/images/success/sammy-line-success.png",
               onPressed: () {
                 AuthenticationRepository.instance.screenRedirect();
               },

@@ -25,7 +25,7 @@ class HomeAppBar extends StatelessWidget {
           Text("Learning Management System",
               style: Theme.of(context)
                   .textTheme
-                  .titleSmall!
+                  .titleLarge!
                   .apply(color: Colors.grey)),
           Row(
             children: [
@@ -35,7 +35,7 @@ class HomeAppBar extends StatelessWidget {
                       .titleMedium!
                       .apply(color: Colors.grey)),
               const SizedBox(
-                width: 16,
+                width: 6,
               ),
               Obx(() {
                 if (controller.profileLoading.value) {

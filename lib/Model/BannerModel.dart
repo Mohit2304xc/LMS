@@ -1,29 +1,38 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BannerModel {
-  String imageURL;
-  final String targetScreen;
-  final bool active;
+  final String imageURL;
+  final String name;
+  final String description;
+  final String courseImage; // Add courseImage field
+  final String courseRedirectURL; // Add courseRedirectURL field
 
   BannerModel({
     required this.imageURL,
-    required this.targetScreen,
-    required this.active,
+    required this.name,
+    required this.description,
+    required this.courseImage,
+    required this.courseRedirectURL,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'ImageURL': imageURL,
-      'TargetScreen': targetScreen,
-      'Active': active,
-    };
+  factory BannerModel.fromJson(Map<String, dynamic> json) {
+    return BannerModel(
+      imageURL: json['src'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      courseImage: json['images'][0]['src'] ?? '',
+      courseRedirectURL: json['permalink'] ?? '',
+    );
   }
-
   factory BannerModel.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     return BannerModel(
-        imageURL: data['ImageURL'] ?? '',
-        targetScreen: data['TargetScreen'] ?? '',
-        active: data['Active'] ?? false);
+      imageURL: data['ImageURL'] ?? '',
+      name: data['Name'] ?? '',
+      description: data['Description'] ?? '',
+      courseImage: data['CourseImage'] ?? '', // Initialize courseImage field
+      courseRedirectURL: data['CourseRedirectURL'] ?? '', // Initialize courseRedirectURL field
+    );
   }
 }
+
