@@ -231,5 +231,7 @@ class CourseRepository extends GetxController {
     } catch (e) {
       throw e.toString();
     }
+
+
   }
 }
