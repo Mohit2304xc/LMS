@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dummy1/Widgets/Appbar/Appbar.dart';
@@ -12,12 +12,12 @@ class AllPopularProducts extends StatelessWidget {
   const AllPopularProducts(
       {super.key,
       required this.title,
-      this.query,
+      //this.query,
       required this.futureMethod,
       });
 
   final String title;
-  final Query? query;
+  //final Query? query;
   final Future<List<CourseModel>> futureMethod;
 
   @override

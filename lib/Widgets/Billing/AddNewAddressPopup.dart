@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../Controller/AddressController.dart';
@@ -11,13 +12,16 @@ class AddNewAddressScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = AddressController.instance;
+    final controller = Get.put(AddressController());
     return Scaffold(
       appBar: AppbarMenu(
           showBackArrow: true,
           title: Text("Add New Address",
-              style: Theme.of(context).textTheme.headlineSmall),
-          onPressed: () => const AddressScreen(),
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall!
+                  .apply(color: Colors.white)),
+          onPressed: () => Get.to(const AddressScreen()),
           opacity: 1),
       body: SingleChildScrollView(
         child: Padding(
@@ -51,25 +55,25 @@ class AddNewAddressScreen extends StatelessWidget {
                   children: [
                     Expanded(
                         child: TextFormField(
-                          controller: controller.street,
-                          validator: (value) =>
-                              Validators.validateEmptyText('Street', value),
-                          decoration: const InputDecoration(
-                              prefixIcon: Icon(Iconsax.building_31),
-                              labelText: 'Street'),
-                        )),
+                      controller: controller.street,
+                      validator: (value) =>
+                          Validators.validateEmptyText('Street', value),
+                      decoration: const InputDecoration(
+                          prefixIcon: Icon(Iconsax.building_31),
+                          labelText: 'Street'),
+                    )),
                     const SizedBox(
                       width: 16,
                     ),
                     Expanded(
                         child: TextFormField(
-                          validator: (value) =>
-                              Validators.validateEmptyText('Postal Code', value),
-                          controller: controller.postalCode,
-                          decoration: const InputDecoration(
-                              prefixIcon: Icon(Iconsax.code),
-                              labelText: 'Postal Code'),
-                        )),
+                      validator: (value) =>
+                          Validators.validateEmptyText('Postal Code', value),
+                      controller: controller.postalCode,
+                      decoration: const InputDecoration(
+                          prefixIcon: Icon(Iconsax.code),
+                          labelText: 'Postal Code'),
+                    )),
                   ],
                 ),
                 const SizedBox(
@@ -79,25 +83,26 @@ class AddNewAddressScreen extends StatelessWidget {
                   children: [
                     Expanded(
                         child: TextFormField(
-                          validator: (value) =>
-                              Validators.validateEmptyText('City', value),
-                          controller: controller.city,
-                          decoration: const InputDecoration(
-                              prefixIcon: Icon(Iconsax.building),
-                              labelText: 'City'),
-                        )),
+                      validator: (value) =>
+                          Validators.validateEmptyText('City', value),
+                      controller: controller.city,
+                      decoration: const InputDecoration(
+                          prefixIcon: Icon(Iconsax.building),
+                          labelText: 'City'),
+                    )),
                     const SizedBox(
                       width: 16,
                     ),
                     Expanded(
-                        child: TextFormField(
-                          validator: (value) =>
-                              Validators.validateEmptyText('State', value),
-                          controller: controller.state,
-                          decoration: const InputDecoration(
-                              prefixIcon: Icon(Iconsax.activity),
-                              labelText: 'State'),
-                        )),
+                      child: TextFormField(
+                        validator: (value) =>
+                            Validators.validateEmptyText('State', value),
+                        controller: controller.state,
+                        decoration: const InputDecoration(
+                            prefixIcon: Icon(Iconsax.activity),
+                            labelText: 'State'),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(
@@ -115,7 +120,11 @@ class AddNewAddressScreen extends StatelessWidget {
                 ),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(onPressed: () {controller.addNewAddresses();}, child: const Text('Save')),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        controller.addNewAddresses();
+                      },
+                      child: const Text('Save')),
                 )
               ],
             ),

@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CategoryModel {
   String id;
@@ -22,7 +22,7 @@ class CategoryModel {
     };
   }
 
-  factory CategoryModel.fromSnapshot(
+  /*factory CategoryModel.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> document) {
     if (document.data() != null) {
       final data = document.data()!;
@@ -34,7 +34,7 @@ class CategoryModel {
     } else {
       return CategoryModel.empty();
     }
-  }
+  }*/
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(

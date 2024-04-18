@@ -37,22 +37,24 @@ class HomeAppBar extends StatelessWidget {
               const SizedBox(
                 width: 6,
               ),
-              Obx(() {
-                if (controller.profileLoading.value) {
-                  return const ShimmerEffect(width: 80, height: 15);
-                } else {
-                  return Text(controller.user.value.fullName,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .apply(color: Colors.grey));
-                }
-              }),
+              Obx(
+                () {
+                  if (controller.profileLoading.value) {
+                    return const ShimmerEffect(width: 80, height: 15);
+                  } else {
+                    return Text(controller.user.value.fullName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .apply(color: Colors.grey));
+                  }
+                },
+              ),
             ],
           ),
         ],
       ),
-       actions: [
+      actions: [
         CartIcon(
           onPressed: () {},
         ),

@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dummy1/Model/CourseModel.dart';
 import 'package:dummy1/Repository/CourseRepository.dart';
 import 'package:dummy1/Widgets/snackbar/Snackbar.dart';
@@ -15,7 +15,7 @@ class AllProductController extends GetxController{
 
 
 
-  Future<List<CourseModel>> fetchCoursesByQuery(Query? query)async{
+  /*Future<List<CourseModel>> fetchCoursesByQuery(Query? query)async{
     try{
       if(query == null){
         return [];
@@ -27,7 +27,7 @@ class AllProductController extends GetxController{
       return [];
     }
   }
-
+*/
   void sortCourses(String sortOption){
     selectedSortOption.value = sortOption;
 

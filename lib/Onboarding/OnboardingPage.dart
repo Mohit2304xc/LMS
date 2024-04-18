@@ -20,7 +20,7 @@ class OnboardingPage extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 70,
           ),
           Expanded(
@@ -29,6 +29,7 @@ class OnboardingPage extends StatelessWidget {
                 height: MediaQuery.of(Get.context!).size.height * 0.8,
                 image: AssetImage(image)),
           ),
+          const SizedBox(height: 30),
           Expanded(
             child: Text(
               title,

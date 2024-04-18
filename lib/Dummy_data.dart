@@ -1,4 +1,4 @@
-import 'package:dummy1/Controller/Course/CourseController.dart';
+/*import 'package:dummy1/Controller/Course/CourseController.dart';
 import 'package:dummy1/Model/CourseModel.dart';
 import 'package:dummy1/Model/CategoryModel.dart';
 import 'package:dummy1/Widgets/Course/CourseDetail.dart';
@@ -495,3 +495,4 @@ class DummyData {
         ),
   ];
 }
+*/

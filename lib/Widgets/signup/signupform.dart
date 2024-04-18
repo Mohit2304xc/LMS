@@ -136,7 +136,9 @@ class SignUpForm extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () => controller.signup(),
+              onPressed: () async {
+                controller.validateUserEmail();
+              },
               child: const Text("Create Account"),
             ),
           )

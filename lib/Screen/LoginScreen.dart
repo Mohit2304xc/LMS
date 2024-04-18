@@ -18,9 +18,9 @@ class LoginScreen extends StatelessWidget {
             children: [
               LoginHeader(),
               LoginForm(),
-              FormDivider(),
-              SizedBox(height: 16,),
-              SocialButton()
+              //FormDivider(),
+              //SizedBox(height: 16,),
+              //SocialButton()
             ],
           ),
         ),

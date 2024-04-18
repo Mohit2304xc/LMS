@@ -1,13 +1,15 @@
-import 'package:dummy1/Controller/Course/CourseController.dart';
-import 'package:dummy1/Model/CourseModel.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:dummy1/Widgets/CarouselSlider/RoundedImage.dart';
-import 'package:dummy1/Widgets/CircularContainer.dart';
-import 'package:dummy1/Widgets/ProductCardVertical/CoursePrice.dart';
+
+import '../../Controller/Course/CourseController.dart';
+import '../../Model/CourseModel.dart';
+import 'package:flutter/material.dart';
+
+import '../CarouselSlider/RoundedImage.dart';
+import '../CircularContainer.dart';
 import '../Course/CourseAddToCart.dart';
 import '../Course/CourseDetail.dart';
 import '../FavouriteIcon/FavouriteIcon.dart';
+import 'CoursePrice.dart';
 import 'Details.dart';
 
 class CourseCardVertical extends StatelessWidget {
@@ -18,15 +20,13 @@ class CourseCardVertical extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = CourseController.instance;
-    final salePercentage =
-        controller.calculateSalePercentage(course.price, course.salePrice);
+    final salePercentage = controller.calculateSalePercentage(
+        course.price, double.tryParse(course.salePrice));
+    final hasSalePrice = course.salePrice != "";
+
     return GestureDetector(
       onTap: () {
-        Get.to(
-          () => CourseDetail(
-            course: course,
-          ),
-        );
+        Get.to(() => CourseDetail(course: course));
       },
       child: Container(
         width: 180,
@@ -34,10 +34,11 @@ class CourseCardVertical extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-                color: Colors.grey.shade300.withOpacity(0.1),
-                blurRadius: 50,
-                spreadRadius: 7,
-                offset: const Offset(0, 2)),
+              color: Colors.grey.shade300.withOpacity(0.1),
+              blurRadius: 50,
+              spreadRadius: 7,
+              offset: const Offset(0, 2),
+            ),
           ],
           borderRadius: BorderRadius.circular(16),
         ),
@@ -46,7 +47,7 @@ class CourseCardVertical extends StatelessWidget {
             CircularContainer(
               height: 180,
               radius: 15,
-              padding: const EdgeInsets.only(right: 4.0,left: 4),
+              padding: const EdgeInsets.only(right: 4.0, left: 4),
               child: Stack(
                 children: [
                   RoundedImage(
@@ -79,13 +80,11 @@ class CourseCardVertical extends StatelessWidget {
                     child: FavouriteIcon(
                       courseId: course.id,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: DetailsForVerticalCard(
@@ -99,21 +98,33 @@ class CourseCardVertical extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    CoursePriceText(
-                      price: controller.getOriginalProductPrice(course),
-                      lineThrough: true,
+                    Visibility(
+                      visible: hasSalePrice,
+                      child: CoursePriceText(
+                        price: controller.getOriginalProductPrice(course),
+                        lineThrough: true,
+                      ),
                     ),
-                    const SizedBox(
-                      width: 10,
+                    Visibility(
+                      visible: hasSalePrice == false,
+                      child: CoursePriceText(
+                        price: controller.getOriginalProductPrice(course),
+                        lineThrough: false,
+                      ),
                     ),
-                    CoursePriceText(price: controller.getProductPrice(course)),
+                    Visibility(
+                      visible: hasSalePrice,
+                      child: const SizedBox(width: 10),
+                    ),
+                    Visibility(
+                        visible: hasSalePrice,
+                        child: CoursePriceText(
+                            price: controller.getProductPrice(course))),
                   ],
                 ),
-                CourseAddToCart(
-                  course: course,
-                ),
+                CourseAddToCart(course: course),
               ],
-            )
+            ),
           ],
         ),
       ),

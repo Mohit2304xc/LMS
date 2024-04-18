@@ -35,7 +35,7 @@ class LoginForm extends StatelessWidget {
               () => TextFormField(
                 obscureText: controller.hidePassword.value,
                 controller: controller.password,
-                validator: (value) => Validators.validatePassword(value),
+                validator: (value) => Validators.validateEmptyText("Password",value),
                 expands: false,
                 decoration: InputDecoration(
                   labelText: "Password",
@@ -87,7 +87,7 @@ class LoginForm extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                   controller.emailAndPasswordSignIn();
+                   controller.loginUser();
                 },
                 child: const Text("Sign in"),
               ),

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:dummy1/Model/QuestionPaperModel.dart';
 import 'package:dummy1/Repository/QuestionRepository.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
 import '../Widgets/Validators/Validation.dart';
@@ -8,7 +11,7 @@ import '../Widgets/Validators/Validation.dart';
 class QuestionController extends GetxController {
   static QuestionController get instance => Get.find();
 
-  final repo = Get.put(QuestionRepository());
+  // final repo = Get.put(QuestionRepository());
   final title = TextEditingController();
   final correctAnswer = TextEditingController();
   final questionText = TextEditingController();
@@ -17,13 +20,27 @@ class QuestionController extends GetxController {
   final option3 = TextEditingController();
   final option4 = TextEditingController();
 
-  Future<List<Question>> fetchQuestions(String examTitle) async {
-    final result = await repo.fetchQuestions(examTitle);
 
-    return result;
+  Future<List<Question>> fetchQuestions(String examTitle) async {
+    const url = 'https://server4.prabisha.com/api/quiz';
+    final response = await http.get(Uri.parse(url));
+    print(examTitle);
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body)['data'];
+      final List<Question> allQuestions =
+          data.map((json) => Question.fromJson(json)).toList();
+      print(allQuestions);
+      final List<Question> filteredQuestions = allQuestions
+          .where((question) => question.topic == examTitle)
+          .toList();
+      print(filteredQuestions);
+      return filteredQuestions;
+    } else {
+      throw Exception('Failed to load questions');
+    }
   }
 
-  void inputTitleForDocumentUploadPopup() {
+  /*void inputTitleForDocumentUploadPopup() {
     Get.dialog(
       AlertDialog(
         title: const Text('Question'),
@@ -123,7 +140,7 @@ class QuestionController extends GetxController {
                       option4.text
                     ],
                     correctAnswer: correctAnswer.text);
-                repo.addQuestionToFirebase(question, title.text);
+                //repo.addQuestionToFirebase(question, title.text);
                 title.clear();
                 questionText.clear();
                 correctAnswer.clear();
@@ -139,7 +156,7 @@ class QuestionController extends GetxController {
         ),
       ),
     );
-  }
+  }*/
 
   @override
   void onClose() {

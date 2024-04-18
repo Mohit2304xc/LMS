@@ -34,11 +34,21 @@ class ForgotPassword extends StatelessWidget {
             ),
             Form(
               key: controller.forgotPasswordFormKey,
-              child: TextFormField(
-                controller: controller.email,
-                validator: Validators.validateEmail ,
-                decoration: const InputDecoration(
-                    labelText: "email", prefixIcon: Icon(Iconsax.direct_right)),
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: controller.email,
+                    validator: Validators.validateEmail ,
+                    decoration: const InputDecoration(
+                        labelText: "email", prefixIcon: Icon(Iconsax.direct_right)),
+                  ),
+                  TextFormField(
+                    controller: controller.password,
+                    validator: (value) => Validators.validatePassword(value) ,
+                    decoration: const InputDecoration(
+                        labelText: "New Password", prefixIcon: Icon(Icons.password)),
+                  ),
+                ],
               ),
             ),
             const SizedBox(
@@ -48,7 +58,7 @@ class ForgotPassword extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  controller.sendPasswordResetEmail();
+                  controller.passwordResetDialog();
                   },
                 child: const Text("Submit"),
               ),

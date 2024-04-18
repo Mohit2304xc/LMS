@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:dummy1/Controller/CouponCodeController.dart';
 import 'package:dummy1/Controller/OrderController.dart';
 import 'package:dummy1/Screen/Cart.dart';
 import 'package:dummy1/Widgets/snackbar/Snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:dummy1/Widgets/Appbar/Appbar.dart';
 import 'package:dummy1/Widgets/CircularContainer.dart';
 import '../Controller/CartController.dart';
 import '../Widgets/Billing/AmountSection.dart';
+import 'package:http/http.dart' as http;
 import '../Widgets/Billing/BillingAddressSection.dart';
 import '../Widgets/Billing/BillingPaymentSection.dart';
 
@@ -20,71 +24,70 @@ class CheckoutScreen extends StatelessWidget {
     final orderController = Get.put(OrderController());
     final totalAmount = controller.totalCartPrice.value;
     return Scaffold(
-      appBar: AppbarMenu(
-        showBackArrow: true,
-        opacity: 1,
-        title: Text(
-          "CheckOut",
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge
-              ?.apply(color: Colors.white),
-        ),
-        onPressed: () {
-          Get.back();
-        },
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(24),
-        child: ElevatedButton(
+        appBar: AppbarMenu(
+          showBackArrow: true,
+          opacity: 1,
+          title: Text(
+            "CheckOut",
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.apply(color: Colors.white),
+          ),
           onPressed: () {
-            orderController.processOrder(totalAmount);
+            Get.to(() => const CartScreen());
           },
-          child: const Text("CheckOut"),
         ),
-      ),
-      body: const SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Column(
-            children: [
-              CartItems(showAddRemoveButton: false),
-              SizedBox(
-                height: 32,
-              ),
-              CouponCode(),
-              SizedBox(
-                height: 32,
-              ),
-              CircularContainer(
-                height: 450,
-                width: 400,
-                radius: 10,
-                backgroundColor: Colors.white,
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      AmountSection(),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Divider(),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      BillingPaymentSection(),
-                      SizedBox(height: 16),
-                      AddressSection(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(24),
+          child: ElevatedButton(
+            onPressed: () {
+              orderController.processOrder(totalAmount);
+            },
+            child: const Text("CheckOut"),
           ),
         ),
-      )
-    );
+        body: const SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              children: [
+                CartItems(showAddRemoveButton: false),
+                SizedBox(
+                  height: 32,
+                ),
+                CouponCode(),
+                SizedBox(
+                  height: 32,
+                ),
+                CircularContainer(
+                  height: 450,
+                  width: 400,
+                  radius: 10,
+                  backgroundColor: Colors.white,
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        AmountSection(),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Divider(),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        BillingPaymentSection(),
+                        SizedBox(height: 16),
+                        AddressSection(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }
 
@@ -124,7 +127,7 @@ class CouponCode extends StatelessWidget {
             width: 90,
             child: ElevatedButton(
               onPressed: () {
-                final afterDiscount = controller.applyCoupon(context,subTotal);
+                final afterDiscount = controller.applyCoupon(context, subTotal);
                 cartController.updateFinalAmount(afterDiscount);
                 SnackBars.SuccessSnackBar(title: 'Coupon has been applied!');
               },

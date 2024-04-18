@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BannerModel {
   final String imageURL;
@@ -24,7 +24,7 @@ class BannerModel {
       courseRedirectURL: json['permalink'] ?? '',
     );
   }
-  factory BannerModel.fromSnapshot(DocumentSnapshot snapshot) {
+  /*factory BannerModel.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     return BannerModel(
       imageURL: data['ImageURL'] ?? '',
@@ -33,6 +33,6 @@ class BannerModel {
       courseImage: data['CourseImage'] ?? '', // Initialize courseImage field
       courseRedirectURL: data['CourseRedirectURL'] ?? '', // Initialize courseRedirectURL field
     );
-  }
+  }*/
 }
 

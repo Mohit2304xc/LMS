@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:dummy1/Model/BannerModel.dart';
@@ -10,9 +10,9 @@ import '../Exceptions/platform_exceptions.dart';
 class BannerRepository extends GetxController {
   static BannerRepository get instance => Get.find();
 
-  final _db = FirebaseFirestore.instance;
+  //final _db = FirebaseFirestore.instance;
 
-  Future<List<BannerModel>> fetchBanners() async {
+ /* Future<List<BannerModel>> fetchBanners() async {
     try {
       final result = await _db
           .collection('Banners')
@@ -30,7 +30,7 @@ class BannerRepository extends GetxController {
     } catch (e) {
       throw 'Something went wrong while fetching banners';
     }
-  }
+  }*/
 
 
   /*Future<void> uploadDummyData(List<BannerModel> banners)async{

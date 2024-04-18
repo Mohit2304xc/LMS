@@ -20,40 +20,37 @@ class AddressScreen extends StatelessWidget {
       appBar: AppbarMenu(
           showBackArrow: true,
           title: Text("Addresses",
-              style: Theme
-                  .of(context)
+              style: Theme.of(context)
                   .textTheme
                   .headlineSmall!
                   .apply(color: Colors.white)),
-          onPressed: () => const NavigationMenu(),
+          onPressed: () {
+            Get.to(const NavigationMenu());
+          },
           opacity: 1),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Obx(
-                () =>
-                FutureBuilder(
-                  key: Key(controller.refreshData.value.toString()),
-                  future: controller.getAllUserAddresses(),
-                  builder: (context, snapshot) {
-                    final response = helper.checkMultiRecord(
-                        snapshot: snapshot);
-                    if (response != null) return response;
+            () => FutureBuilder(
+              key: Key(controller.refreshData.value.toString()),
+              future: controller.getAllUserAddresses(),
+              builder: (context, snapshot) {
+                final response = helper.checkMultiRecord(snapshot: snapshot);
+                if (response != null) return response;
 
-                    return ListView.builder(
-                      itemBuilder: (_, index) =>
-                          SingleAddress(
-                              address: snapshot.data![index],
-                              onTap: () async {
-                                await controller.selectAddress(
-                                    snapshot.data![index]);
-                                Get.back();
-                              }),
-                      shrinkWrap: true,
-                      itemCount: snapshot.data!.length,
-                    );
-                  },
-                ),
+                return ListView.builder(
+                  itemBuilder: (_, index) => SingleAddress(
+                      address: snapshot.data![index],
+                      onTap: () async {
+                        await controller.selectAddress(snapshot.data![index]);
+                        Get.back();
+                      }),
+                  shrinkWrap: true,
+                  itemCount: snapshot.data!.length,
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -114,10 +111,7 @@ class SingleAddress extends StatelessWidget {
                     address.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleLarge,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(
                     height: 4,
@@ -134,10 +128,7 @@ class SingleAddress extends StatelessWidget {
                     address.toString(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleLarge,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ],
               ),

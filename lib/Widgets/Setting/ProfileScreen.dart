@@ -41,7 +41,7 @@ class ProfileScreen extends StatelessWidget {
                       () {
                         final networkImage =
                             controller.user.value.profilePicture;
-                        final image = networkImage.isNotEmpty
+                        final image = networkImage!.isNotEmpty
                             ? networkImage
                             : 'assets/images/profile/download (1).png';
                         return controller.imageLoading.value
@@ -76,15 +76,16 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              const SectionHeading(
+              SectionHeading(
                 title: "Profile Information",
-                showActionButton: false,
+                showActionButton: true,
+                buttonTitle: "Edit",
+                onPressed: () {Get.to(()=>const ChangeData());},
               ),
               const SizedBox(
                 height: 16,
               ),
               ProfileMenu(
-                onPressed: () {Get.to(()=>const ChangeData());},
                 field: 'Name',
                 data: controller.user.value.fullName,
               ),
@@ -92,8 +93,6 @@ class ProfileScreen extends StatelessWidget {
                 height: 10,
               ),
               ProfileMenu(
-                onPressed: () {},
-                icon: Iconsax.copy,
                 field: 'UserId',
                 data: controller.user.value.username,
               ),
@@ -101,7 +100,6 @@ class ProfileScreen extends StatelessWidget {
                 height: 10,
               ),
               ProfileMenu(
-                onPressed: () {},
                 field: 'EmailId',
                 data: controller.user.value.email,
               ),
@@ -109,15 +107,13 @@ class ProfileScreen extends StatelessWidget {
                 height: 10,
               ),
               ProfileMenu(
-                onPressed: () {},
                 field: 'Phone Number',
-                data: controller.user.value.phoneNumber,
+                data: controller.user.value.phonenumber,
               ),
               const SizedBox(
                 height: 10,
               ),
               ProfileMenu(
-                onPressed: () {},
                 field: 'Gender',
                 data: 'Male',
               ),
@@ -125,7 +121,6 @@ class ProfileScreen extends StatelessWidget {
                 height: 10,
               ),
               ProfileMenu(
-                onPressed: () {},
                 field: 'Date Of Birth',
                 data: '10 Oct 1998',
               ),
@@ -155,15 +150,13 @@ class ProfileScreen extends StatelessWidget {
 class ProfileMenu extends StatelessWidget {
   const ProfileMenu({
     super.key,
-    required this.onPressed,
+    this.onPressed,
     required this.field,
     required this.data,
-    this.icon = Iconsax.arrow_right_34,
   });
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String field, data;
-  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -185,11 +178,6 @@ class ProfileMenu extends StatelessWidget {
                   data,
                   style: Theme.of(context).textTheme.bodyLarge,
                 )),
-            Expanded(
-                child: Icon(
-              icon,
-              size: 18,
-            ))
           ],
         ),
       ),

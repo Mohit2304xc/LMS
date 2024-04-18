@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:dummy1/Controller/Course/CourseController.dart';
 import 'package:dummy1/Model/CourseModel.dart';
 import 'package:dummy1/Repository/CourseRepository.dart';
+import 'package:dummy1/Widgets/Services/SharedReferences.dart';
 import 'package:get/get.dart';
 
 import '../Widgets/Services/LocalStorage.dart';
@@ -11,7 +13,7 @@ class FavouriteController extends GetxController {
   static FavouriteController get instance => Get.find();
 
   final favourites = <String, bool>{}.obs;
-  final localStorage = TLocalStorage.instance();
+  //final localStorage = TLocalStorage.instance();
 
   @override
   void onInit() {
@@ -20,7 +22,7 @@ class FavouriteController extends GetxController {
   }
 
   void initFavourites() async {
-    final json = localStorage.readData('favourites');
+    final json = await SharedReferences.readDataFromWishlist('favourites');
     if (json != null) {
       final storedFavourites = jsonDecode(json) as Map<String, dynamic>;
       favourites.assignAll(
@@ -34,7 +36,7 @@ class FavouriteController extends GetxController {
 
   void saveFavouritesToStorage() {
     final encodedFavourites = json.encode(favourites);
-    localStorage.saveData('favourites', encodedFavourites);
+    SharedReferences.saveDataInWishlist('favourites', encodedFavourites);
     // print(course);
   }
 
@@ -45,7 +47,7 @@ class FavouriteController extends GetxController {
       saveFavouritesToStorage();
       SnackBars.customToast(message: 'Course has been Added to Wishlist');
     } else {
-      localStorage.removeData(courseId);
+      SharedReferences.removeData(courseId);
       favourites.remove(courseId);
       saveFavouritesToStorage();
       favourites.refresh();
@@ -54,7 +56,7 @@ class FavouriteController extends GetxController {
   }
 
   Future<List<CourseModel>> favouriteCourses() async {
-    final course = await CourseRepository.instance
+    final course = await CourseController.instance
         .getFavouriteCourses(favourites.keys.toList());
     print(course);
     return course;

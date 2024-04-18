@@ -43,26 +43,27 @@ class RoundedImage extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: ClipRRect(
-            borderRadius: applyImageRadius
-                ? BorderRadius.circular(borderRadius)
-                : BorderRadius.zero,
-            child: Center(
-              child: isNetworkImage
-                  ? CachedNetworkImage(
-                      imageUrl: image,
-                      fit: fit,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              const ShimmerEffect(width: 55, height: 55),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    )
-                  : Image(
-                      fit: fit,
-                      image: isNetworkImage
-                          ? NetworkImage(image)
-                          : AssetImage(image) as ImageProvider),
-            )),
+          borderRadius: applyImageRadius
+              ? BorderRadius.circular(borderRadius)
+              : BorderRadius.zero,
+          child: Center(
+            child: isNetworkImage
+                ? CachedNetworkImage(
+                    imageUrl: image,
+                    fit: fit,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) =>
+                            const ShimmerEffect(width: 55, height: 55),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  )
+                : Image(
+                    fit: fit,
+                    image: isNetworkImage
+                        ? NetworkImage(image)
+                        : AssetImage(image) as ImageProvider),
+          ),
+        ),
       ),
     );
   }

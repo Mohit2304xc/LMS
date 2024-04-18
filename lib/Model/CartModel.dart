@@ -1,3 +1,5 @@
+import 'CourseModel.dart';
+
 class CartModel {
   String courseId;
   String title;
@@ -32,6 +34,16 @@ class CartModel {
       title: json['Title'],
       price: json['Price']?.toDouble(),
       image: json['Image'],
+    );
+  }
+
+  factory CartModel.fromCourseModel(CourseModel course) {
+    return CartModel(
+      title: course.title,
+      image: course.thumbnail,
+      price: course.price,
+      courseId: '',
+      quantity: 0,
     );
   }
 }

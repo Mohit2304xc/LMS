@@ -13,7 +13,7 @@ class LoginHeader extends StatelessWidget {
         const Center(
           child: Image(
             height: 150,
-            image: AssetImage("assets/images/prabishalogo.jpeg"),
+            image: AssetImage("assets/images/prabishalogo.png"),
           ),
         ),
         Text(

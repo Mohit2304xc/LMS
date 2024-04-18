@@ -22,7 +22,7 @@ class DownloadCourseScreen extends StatelessWidget {
         ),
       ),
       body: FutureBuilder(
-        future: orderController.fetchUserOrders(), // Fetch orders from Firestore
+        future: orderController.getPdfBasedOnTitle("title"),//fetchUserOrders(), // Fetch orders from Firestore
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator(); // Show loading indicator while fetching data
@@ -31,11 +31,11 @@ class DownloadCourseScreen extends StatelessWidget {
           } else {
             final orders = snapshot.data!;
             return ListView.builder(
-              itemCount: orders.length,
+              itemCount: 10,//orders.length,
               itemBuilder: (context, index) {
-                final order = orders[index];
+                //final order = orders[index];
                 return FutureBuilder(
-                  future: orderController.fetchCourseDetails(order.items),
+                  future: orderController.getPdfBasedOnTitle("title"),//fetchUserOrders(),//fetchCourseDetails(order.items),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator(); // Show loading indicator while fetching data
@@ -47,7 +47,7 @@ class DownloadCourseScreen extends StatelessWidget {
                       // Example: Use a PDF viewer widget or open the PDF in a webview
                       // Navigate to another screen to display PDF
                       return ListTile(
-                        title: Text('Order ID: ${order.id}'),
+                        title: Text('Order ID: '),//${order.id}'),
                         onTap: () {
                           // Example: Open PDF in a new screen
                           // navigateToPDFViewer(courseDetailsList);

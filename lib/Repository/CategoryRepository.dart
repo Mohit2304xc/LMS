@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:dummy1/Model/CategoryModel.dart';
@@ -13,7 +13,7 @@ import 'dart:convert';
 class CategoryRepository extends GetxController {
   static CategoryRepository get instance => Get.find();
 
-  final _db = FirebaseFirestore.instance;
+  //final _db = FirebaseFirestore.instance;
 
   static const String baseUrl =
       'https://lms.prabisha.com/wp-json/wc/v3/products';
@@ -23,21 +23,30 @@ class CategoryRepository extends GetxController {
       'cs_0e2c4571b4035f97cdac6693c71b082b79fe52a4';
 
   Future<List<CourseModel>> getCoursesByCategory(String categoryName) async {
-    final response = await http.get(Uri.parse(
-        '$baseUrl?consumer_key=$consumerKey&consumer_secret=$consumerSecret'));
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      List<CourseModel> courses = data
-          .where((course) =>
-      course['categories'] != null &&
-          course['categories'][0]['name'] == categoryName)
-          .map((json) => CourseModel.fromJson(json))
-          .toList();
-      return courses;
-    } else {
-      throw Exception('Failed to load courses');
+    try {
+      final response = await http.get(Uri.parse(
+          'https://lms.prabisha.com/wp-json/wc/v3/products?per_page=100&consumer_key=ck_a57db437f1c9d5273d73fe76d0beac292e85d0aa&consumer_secret=cs_0e2c4571b4035f97cdac6693c71b082b79fe52a4'));
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+
+        List<CourseModel> courses = data
+            .where((course) =>
+        course["categories"] != null &&
+            course["categories"].any((category) =>
+            category["name"].toString().toLowerCase() == categoryName.toLowerCase()))
+            .map((json) => CourseModel.fromJson(json))
+            .toList();
+
+        return courses;
+      } else {
+        throw Exception('Failed to load courses');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch courses: $e');
     }
   }
+
 
 
   Future<List<CategoryModel>> getAllCategories() async {
@@ -57,10 +66,8 @@ class CategoryRepository extends GetxController {
     }
   }
 
-
-
   ///Upload categories
-    Future<void> uploadDummyData(List<CategoryModel> categories) async {
+/*Future<void> uploadDummyData(List<CategoryModel> categories) async {
       try {
         final storage = Get.put(FirebaseStorageService());
 
@@ -84,5 +91,5 @@ class CategoryRepository extends GetxController {
       } catch (e) {
         throw 'Something went wrong';
       }
-    }
-  }
+    }*/
+}

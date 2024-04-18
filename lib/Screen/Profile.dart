@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dummy1/Controller/Course/CourseController.dart';
 import 'package:dummy1/Controller/QuestionController.dart';
 import 'package:dummy1/Dummy_data.dart';
@@ -17,11 +19,18 @@ import 'package:dummy1/Widgets/Curved_Edges/PrimaryHeaderContainer.dart';
 import 'package:dummy1/Widgets/SectionHeading/SectionHeading.dart';
 import 'package:dummy1/Widgets/Setting/ProfileScreen.dart';
 import 'package:dummy1/Widgets/Setting/Settings_menu.dart';
-
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/link.dart';
 import '../Widgets/Animation/shimmer.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
+
+  void _launchURL(Uri url) async {
+    if (!await launchUrl(url,mode: LaunchMode.inAppWebView)) {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,50 +97,67 @@ class Profile extends StatelessWidget {
                   const SizedBox(
                     height: 16,
                   ),
-                  SettingsMenu(
-                    icon: Iconsax.document_upload,
-                    title: "Upload Category",
-                    subtitle: "Upload category",
-                    onTap: () =>
-                        controller.uploadDummyData(DummyData.categories),
+                  Link(
+                    uri: Uri.parse(
+                        "https://hr.prabisha.com/"),
+                    target: LinkTarget.blank,
+                    builder: (context, followLink) {
+                      return GestureDetector(
+                        onTap: followLink,
+                        child: SettingsMenu(
+                          icon: Iconsax.safe_home,
+                          title: "HR Solutions",
+                          subtitle: "HR Solutions provided by Prabisha Consulting",
+                          // onTap: (){},//() => _launchURL(Uri.parse("https://flutter.io"))
+                        ),
+                      );
+                    },
                   ),
-                  SettingsMenu(
-                    icon: Iconsax.document_upload,
-                    title: "Upload Question",
-                    subtitle: "Upload Question",
-                    onTap: () =>
-                        repo.inputTitleForDocumentUploadPopup(),
-                  ),
+
+                  // SettingsMenu(
+                  //   icon: Iconsax.document_upload,
+                  //   title: "Upload Category",
+                  //   subtitle: "Upload category",
+                  //   onTap: () {}
+                  //       //controller.uploadDummyData(DummyData.categories),
+                  // ),
+                  // SettingsMenu(
+                  //   icon: Iconsax.document_upload,
+                  //   title: "Upload Question",
+                  //   subtitle: "Upload Question",
+                  //   onTap: () =>
+                  //       repo.inputTitleForDocumentUploadPopup(),
+                  // ),
+                  // const SizedBox(
+                  //   height: 16,
+                  // ),
+                  // SettingsMenu(
+                  //   icon: Iconsax.document_upload,
+                  //   title: "Upload Document",
+                  //   subtitle: "Upload document",
+                  //   onTap: () =>
+                  //       courseController.inputTitleForDocumentUploadPopup(),
+                  // ),
+                  // const SizedBox(
+                  //   height: 16,
+                  // ),
+                  // SettingsMenu(
+                  //     icon: Iconsax.document_upload,
+                  //     title: "Upload Banner",
+                  //     subtitle: "Upload banner",
+                  //     onTap: () {},),
+                  //         //bannerController.uploadDummyData(DummyData.banners)),
+                  // const SizedBox(
+                  //   height: 16,
+                  // ),
+                  // SettingsMenu(
+                  //   icon: Iconsax.document_upload,
+                  //   title: "Upload Course",
+                  //   subtitle: "Upload Course",
+                  //   onTap: () {}// courseRepo.uploadDummyData(DummyData.courses),
+                  // ),
                   const SizedBox(
-                    height: 16,
-                  ),
-                  SettingsMenu(
-                    icon: Iconsax.document_upload,
-                    title: "Upload Document",
-                    subtitle: "Upload document",
-                    onTap: () =>
-                        courseController.inputTitleForDocumentUploadPopup(),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  SettingsMenu(
-                      icon: Iconsax.document_upload,
-                      title: "Upload Banner",
-                      subtitle: "Upload banner",
-                      onTap: () {},),
-                          //bannerController.uploadDummyData(DummyData.banners)),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  SettingsMenu(
-                    icon: Iconsax.document_upload,
-                    title: "Upload Course",
-                    subtitle: "Upload Course",
-                    onTap: () => courseRepo.uploadDummyData(DummyData.courses),
-                  ),
-                  const SizedBox(
-                    height: 50,
+                    height: 80,
                   ),
                   ElevatedButton(
                     onPressed: () => Get.to(() => const LoginScreen()),
@@ -159,7 +185,7 @@ class UserProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = UserController.instance;
     final networkImage = controller.user.value.profilePicture;
-    final image = networkImage.isNotEmpty
+    final image = networkImage!.isNotEmpty
         ? networkImage
         : 'assets/images/profile/download (1).png';
     return ListTile(

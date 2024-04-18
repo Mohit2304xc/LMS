@@ -1,3 +1,5 @@
+import 'package:dummy1/Controller/UserController.dart';
+import 'package:dummy1/Screen/checkOut.dart';
 import 'package:dummy1/Widgets/Billing/AmountSection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -42,31 +44,35 @@ class AddressController extends GetxController {
 
   Future selectAddress(AddressModel newSelectedAddress) async {
     try {
-      Get.defaultDialog(
-        title: '',
-        onWillPop: () async {
-          return false;
-        },
-        barrierDismissible: false,
-        backgroundColor: Colors.white,
-        content: const CircularProgressIndicator(),
-      );
-
+      print(selectedAddress.value.id);
+      FullScreenLoader.openLoadingDialog('Processing your order',
+          'assets/images/success/72462-check-register.json');
+      print(selectedAddress.value.id);
       if (selectedAddress.value.id.isNotEmpty) {
+        print(selectedAddress.value.id.runtimeType);
         await addressRepository.updateSelectedField(
             selectedAddress.value.id, false);
+        print(selectedAddress.value.id);
       }
-
+      print(selectedAddress.value.id);
       newSelectedAddress.selectedAddress = true;
       selectedAddress.value = newSelectedAddress;
-
+      print(selectedAddress.value.id);
       await addressRepository.updateSelectedField(
           selectedAddress.value.id, true);
+      print(selectedAddress.value.id);
+      Get.to(()=>const CheckoutScreen());
+      SnackBars.SuccessSnackBar(
+          title: 'Address Selection Updated',
+          message: 'The address selection has been updated successfully.');
+      FullScreenLoader.stopLoading();
 
-      Get.back();
+
     } catch (e) {
       SnackBars.ErrorSnackBar(
           title: 'Error in selection', message: e.toString());
+    } finally{
+      FullScreenLoader.stopLoading();
     }
   }
 
@@ -95,12 +101,17 @@ class AddressController extends GetxController {
         postalCode: postalCode.text.trim(),
         country: country.text.trim(),
         city: city.text.trim(),
-        selectedAddress: true,
+        selectedAddress: 1 == 1,
+        userId: UserController.instance.user.value.id,
+        dateTime: DateTime.now(),
       );
+      print(address);
 
       final id = await addressRepository.addAddress(address);
 
       address.id = id;
+
+
       await selectAddress(address);
 
       FullScreenLoader.stopLoading();
@@ -138,7 +149,7 @@ class AddressController extends GetxController {
                 builder: (_, snapshot) {
                   final response = helper.checkMultiRecord(snapshot: snapshot);
                   if (response != null) return response;
-        
+
                   return ListView.builder(
                     itemBuilder: (_, index) => SingleAddress(
                         address: snapshot.data![index],

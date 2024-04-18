@@ -1,8 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dummy1/Model/Usermodel.dart';
 
 class AddressModel {
   String id;
+  final String userId;
   final String name;
   final String phoneNumber;
   final String street;
@@ -14,6 +15,7 @@ class AddressModel {
   bool selectedAddress;
 
   AddressModel({
+    required this.userId,
     required this.name,
     required this.id,
     required this.state,
@@ -36,24 +38,42 @@ class AddressModel {
       phoneNumber: '',
       postalCode: '',
       country: '',
-      city: '');
+      city: '',
+      userId: '');
 
   Map<String, dynamic> toJson() {
     return {
-      'Id': id,
-      'Name': name,
-      'Street': street,
-      'Phone Number': phoneNumber,
-      'Postal Code': postalCode,
-      'State': state,
-      'Selected Address': selectedAddress,
-      'City': city,
-      'Country': country,
-      'Date Time': DateTime.now(),
+      'id': id.toString(),
+      'user_id': userId.toString(),
+      'name': name,
+      'street': street,
+      'phoneNumber': phoneNumber,
+      'postalCode': postalCode,
+      'state': state,
+      'selectedAddress': selectedAddress,
+      'city': city,
+      'country': country,
+      'dateTime': dateTime,
     };
   }
 
-  factory AddressModel.fromMap(Map<String, dynamic> data) {
+  factory AddressModel.fromJson(Map<String, dynamic> document) {
+    return AddressModel(
+      userId: document["user_id"].toString(),
+      name: document["name"],
+      id: document["id"].toString(),
+      state: document["state"],
+      street: document["street"],
+      phoneNumber: document['phoneNumber'],
+      postalCode: document['postalCode'],
+      country: document['country'],
+      city: document["city"],
+      dateTime: DateTime.parse(document["dateTime"]),
+      selectedAddress: document['selectedAddress'] == '1',
+    );
+  }
+
+  /*factory AddressModel.fromMap(Map<String, dynamic> data) {
     return AddressModel(
       name: data['Name'] as String,
       id: data['Id'] as String,
@@ -66,9 +86,9 @@ class AddressModel {
       selectedAddress: data['Selected Address'] as bool,
       dateTime: (data['Date Time'] as Timestamp).toDate(),
     );
-  }
+  }*/
 
-  factory AddressModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
+  /*factory AddressModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     return AddressModel(
       name: data['Name'] ?? '',
@@ -82,7 +102,7 @@ class AddressModel {
       selectedAddress: data['Selected Address'] as bool,
       dateTime: (data['Date Time'] as Timestamp).toDate(),
     );
-  }
+  }*/
 
   @override
   String toString() {

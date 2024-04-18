@@ -1,17 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dummy1/Model/AddressModel.dart';
+import 'dart:convert';
 import 'package:dummy1/Model/Usermodel.dart';
 import '../Controller/OrderController.dart';
-import 'CartModel.dart';
 
 class OrderModel {
   final String id;
   final String userId;
   final OrderStatus status;
-  final double totalAmount;
+  final String totalAmount;
   final DateTime orderDate;
-  final AddressModel? address;
-  final List<CartModel> items;
+  final String address;
+  final List<String> items;
   final String paymentMethod;
 
   OrderModel({
@@ -20,7 +18,7 @@ class OrderModel {
     required this.status,
     required this.totalAmount,
     required this.orderDate,
-    this.address,
+    required this.address,
     required this.items,
     this.paymentMethod = 'Paytm',
   });
@@ -33,24 +31,50 @@ class OrderModel {
   static OrderModel empty() => OrderModel(
       id: '',
       status: OrderStatus.pending,
-      totalAmount: 0,
-      orderDate: '' as DateTime,
-      items: []);
+      totalAmount: '',
+      orderDate: DateTime(1970),
+      items: [],
+      address: '');
 
   Map<String, dynamic> toJson() {
     return {
-      'Id': id,
-      'Status': status.toString(),
-      'TotalAmount': totalAmount,
-      'paymentMethod': paymentMethod,
-      'Address': address?.toJson(),
-      'orderDate': orderDate,
-      'Items': items.map((e) => e.toJson()).toList(),
+      'id': id.toString(),
+      "user_id": userId.toString(),
+      'status': status.toString(),
+      'payment_method': paymentMethod,
+      'total_amount': totalAmount.toString(),
+      'date_time': orderDate.toIso8601String(),
+      'items': jsonEncode(items),
+      'address': address,
     };
   }
 
+  static OrderStatus _parseOrderStatus(String status) {
+    switch (status) {
+      case 'OrderStatus.pending':
+        return OrderStatus.pending;
+    // Add more cases for other status values if needed
+      default:
+        throw ArgumentError('Invalid order status: $status');
+    }
+  }
 
-  factory OrderModel.fromSnapshot(
+  factory OrderModel.fromJson(Map<String, dynamic> document) {
+    List<String> items = List<String>.from(document["items"]);
+    return OrderModel(
+      id: document["id"].toString(),
+      userId: document["user_id"].toString(),
+      status: _parseOrderStatus(document["status"]),
+      totalAmount: document["total_amount"],
+      orderDate: DateTime.parse(document["date_time"]),
+      paymentMethod: document["payment_method"],
+      items: items,
+      address: document["address"] ?? "",
+    );
+  }
+
+
+/*factory OrderModel.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> snapshot) {
     if (snapshot.data() != null) {
       final data = snapshot.data()!;
@@ -69,5 +93,5 @@ class OrderModel {
     } else {
       return OrderModel.empty();
     }
-  }
+  }*/
 }

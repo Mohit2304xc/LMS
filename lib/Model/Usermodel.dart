@@ -1,28 +1,30 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class UserModel {
   final String id;
-  String firstName;
-  String lastName;
+  String firstname;
+  String lastname;
   final String username;
   final String email;
-  String phoneNumber;
-  String profilePicture;
+  String phonenumber;
+  String? profilePicture;
+  String password;
 
   UserModel({
+    required this.password,
     required this.id,
-    required this.firstName,
-    required this.lastName,
+    required this.firstname,
+    required this.lastname,
     required this.username,
     required this.email,
-    required this.phoneNumber,
-    required this.profilePicture,
+    required this.phonenumber,
+    this.profilePicture,
   });
 
-  String get fullName => '$firstName $lastName';
+  String get fullName => '$firstname $lastname';
 
-  String get formattedPhoneNo => formatter.formatPhoneNumber(phoneNumber);
+  String get formattedPhoneNo => formatter.formatPhoneNumber(phonenumber);
 
   static List<String> nameParts(fullName) => fullName.split(" ");
 
@@ -38,25 +40,36 @@ class UserModel {
 
   static UserModel empty() => UserModel(
       id: '',
-      firstName: '',
-      lastName: '',
+      firstname: '',
+      lastname: '',
       username: '',
       email: '',
-      phoneNumber: '',
-      profilePicture: '');
+      phonenumber: '',
+      profilePicture: '',
+      password: '');
 
-  Map<String, dynamic> toJson() {
-    return {
-      'FirstName': firstName,
-      'LastName': lastName,
-      'Username': username,
-      'Email': email,
-      'PhoneNumber': phoneNumber,
-      'ProfilePicture': profilePicture,
-    };
+  Map<String, dynamic> toJson() => {
+        'firstname': firstname,
+        'lastname': lastname,
+        'username': username,
+        'email': email,
+        'phonenumber': phonenumber,
+        'password': password,
+      };
+
+  factory UserModel.fromJson(Map<String, dynamic> document) {
+    return UserModel(
+      id: int.parse(document["user_id"]).toString(),
+      firstname: document["firstname"],
+      lastname: document["lastname"],
+      password: document["password"],
+      username: document["username"],
+      email: document["email"],
+      phonenumber: document["phonenumber"], profilePicture: '',
+    );
   }
 
-  factory UserModel.fromSnapshot(
+  /*factory UserModel.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> document) {
     if (document.data() != null) {
       final data = document.data()!;
@@ -68,12 +81,12 @@ class UserModel {
         email: data['Email'] ?? '',
         phoneNumber: data['PhoneNumber'] ?? '',
         profilePicture: data['ProfilePicture'] ?? '',
+        password: '',
       );
-    }
-    else{
+    } else {
       return UserModel.empty();
     }
-  }
+  }*/
 }
 
 class formatter {

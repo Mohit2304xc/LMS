@@ -8,8 +8,8 @@ import '../VerticalImage/VerticalImage.dart';
 
 class PopularCategories extends StatelessWidget {
   const PopularCategories({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class PopularCategories extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CategoryShimmer(
-            itemCount: 9, // You can specify a placeholder itemCount
+            itemCount: 9,
           );
         } else if (snapshot.hasError) {
           return Center(

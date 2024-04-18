@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CourseModel {
   String id;
   double price;
   String title;
-  double salePrice;
+  String salePrice;
   String thumbnail;
   String? document;
   bool isFeatured;
@@ -20,7 +20,7 @@ class CourseModel {
     required this.isFeatured,
     required this.price,
     required this.title,
-    this.salePrice = 0,
+    this.salePrice = '0',
     required this.thumbnail,
     this.description,
     this.categoryId,
@@ -40,14 +40,14 @@ class CourseModel {
       'Images': images ?? [],
       'Date' : date,
       'Price': price,
-      'Sale Price': salePrice,
+      'Sale Price': salePrice.toString(),
       'Thumbnail': thumbnail,
       'Title': title,
     };
   }
 
   //map json document into model from firebase
-  factory CourseModel.fromSnapshot(
+  /*factory CourseModel.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> document) {
     if(document.data()==null) return CourseModel.empty();
     final data = document.data()!;
@@ -63,11 +63,11 @@ class CourseModel {
       categoryId: data['CategoryId'] ?? '',
       isFeatured: data['IsFeatured'] ?? false,
     );
-  }
+  }*/
 
 
 
-  factory CourseModel.fromQuerySnapshot(
+  /*factory CourseModel.fromQuerySnapshot(
       QueryDocumentSnapshot<Object?> document) {
     final data = document.data() as Map<String,dynamic>;
     return CourseModel(
@@ -82,30 +82,31 @@ class CourseModel {
       categoryId: data['CategoryId'] ?? '',
       isFeatured: data['IsFeatured'] ?? false,
     );
-  }
+  }*/
   static getDescriptionWithoutPTags(String text) {
     // Use regular expression to remove <p> tags
     return text?.replaceAll(RegExp(r'<p[^>]*>|<\/p>'), '') ?? '';
   }
 
   factory CourseModel.fromJson(Map<String, dynamic> json) {
-    try {
+    try{
       final List<dynamic>? downloads = json['downloads'];
       final String? document = downloads != null && downloads.isNotEmpty
           ? downloads[0]['file']
           : '';
+      final double regularPrice = (json['regular_price'] as int).toDouble() ?? 0;
       print("success");
 
       return CourseModel(
         id: json['id'].toString(),
-        price: (json['regular_price'] as int).toDouble(),
+        price: (json['regular_price'] as int).toDouble() ?? 0,
         title: json['name'] ?? '',
         thumbnail: json['images'] != null && json['images'].isNotEmpty
             ? json['images'][0]['src'] ?? ''
             : '',
         document: document ?? "",
         description: json['description'] ?? '',
-        salePrice: (json['sale_price'] as int).toDouble(),
+        salePrice: (json['sale_price']).toString() ?? "0",
         images: json['images'] != null && json['images'].isNotEmpty
             ? List<String>.from(json['images'].map((image) => image['src']))
             : [],
@@ -118,23 +119,10 @@ class CourseModel {
             : null,
       );
     } catch (e) {
-      // Handle parsing error, e.g., log error message and return default value
       print('Error parsing sale_price: $e');
+      print(json['sale_price'].runtimeType);
       print(json['id'].toString());
-      return CourseModel(
-        // Provide default values for other properties
-        id: json['id'].toString(),
-        price: 0,
-        title: json['name'] ?? '',
-        thumbnail: '',
-        document: '',
-        description: '',
-        salePrice: 0,
-        images: [],
-        categoryId: '',
-        isFeatured: false,
-        date: null,
-      );
+      throw e.toString();
     }
   }
 

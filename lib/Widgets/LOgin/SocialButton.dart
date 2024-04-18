@@ -21,7 +21,7 @@ class SocialButton extends StatelessWidget {
           ),
           child: IconButton(
             onPressed: () {
-              controller.googleSignIn();
+              //controller.googleSignIn();
             },
             icon: const Image(
                 width: 14,

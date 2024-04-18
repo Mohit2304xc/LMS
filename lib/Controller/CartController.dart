@@ -130,7 +130,8 @@ class CartController extends GetxController {
 
   //Convert CourseModel to cartModel
   CartModel convertToCartItem(CourseModel course, int quantity) {
-    final price = course.salePrice > 0.0 ? course.salePrice : course.price;
+    final salePrice = double.tryParse(course.salePrice ?? '');
+    final price = salePrice != null && salePrice > 0.0 ? salePrice : course.price;
     return CartModel(
       courseId: course.id,
       quantity: quantity,
@@ -139,6 +140,7 @@ class CartController extends GetxController {
       title: course.title,
     );
   }
+
 
   void updateAlreadyAddedCourseCount(CourseModel course){
     courseQuantityInCart.value = getProductQuantityInCart(course.id);

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dummy1/Widgets/snackbar/Snackbar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
@@ -14,9 +14,9 @@ import '../Widgets/Services/FirebaseStorageService.dart';
 class CourseRepository extends GetxController {
   static CourseRepository get instance => Get.find();
 
-  final _db = FirebaseFirestore.instance;
+  //final _db = FirebaseFirestore.instance;
 
-  Future<void> pickFile(String title) async {
+  /*Future<void> pickFile(String title) async {
     try {
       final storage = Get.put(FirebaseStorageService());
       final pickedFile = await FilePicker.platform.pickFiles(
@@ -51,9 +51,9 @@ class CourseRepository extends GetxController {
     } catch (e) {
       throw e.toString();
     }
-  }
+  }*/
 
-  Future<List<CourseModel>> searchCourses(String query) async {
+  /*Future<List<CourseModel>> searchCourses(String query) async {
     try {
       QuerySnapshot<Map<String, dynamic>> snapshot = await _db
           .collection('CourseDetails')
@@ -71,9 +71,9 @@ class CourseRepository extends GetxController {
       print('Error searching courses: $e');
       return [];
     }
-  }
+  }*/
 
-  Future<List<CourseModel>> getPopularCourses() async {
+  /*Future<List<CourseModel>> getPopularCourses() async {
     try {
       final snapshot = await _db
           .collection("CourseDetails")
@@ -88,9 +88,9 @@ class CourseRepository extends GetxController {
     } catch (e) {
       throw 'Something went wrong';
     }
-  }
+  }*/
 
-  Future<List<CourseModel>> fetchCoursesByQuery(Query query) async {
+  /*Future<List<CourseModel>> fetchCoursesByQuery(Query query) async {
     try {
       final querySnapshot = await query.get();
       final List<CourseModel> courseList = querySnapshot.docs
@@ -104,37 +104,13 @@ class CourseRepository extends GetxController {
     } catch (e) {
       throw 'Something went wrong';
     }
-  }
+  }*/
 
 
-  Future<List<CourseModel>> getFavouriteCourses(List<String> courseId) async {
-    try {
-      final response = await http.get(Uri.parse(
-          'https://lms.prabisha.com/wp-json/wc/v3/products?consumer_key=ck_a57db437f1c9d5273d73fe76d0beac292e85d0aa&consumer_secret=cs_0e2c4571b4035f97cdac6693c71b082b79fe52a4'));
-
-      if (response.statusCode == 200) {
-        List<dynamic> allProducts = json.decode(response.body);
-
-        // Filter products based on the courseId
-        List<CourseModel> course = [];
-        for (var product in allProducts) {
-          if (courseId.contains(product['id'].toString())) {
-            course.add(CourseModel.fromJson(product));
-          }
-        }
-
-        print(course);
-        return course;
-      } else {
-        throw Exception('Failed to load products: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to load products: $e');
-    }
-  }
 
 
-  Future<List<CourseModel>> getAllPopularCourses() async {
+
+  /*Future<List<CourseModel>> getAllPopularCourses() async {
     try {
       final snapshot = await _db
           .collection("CourseDetails")
@@ -148,9 +124,9 @@ class CourseRepository extends GetxController {
     } catch (e) {
       throw 'Something went wrong';
     }
-  }
+  }*/
 
-  Future<List<CourseModel>> getAllCoursesByCategoryId(String categoryId) async {
+  /*Future<List<CourseModel>> getAllCoursesByCategoryId(String categoryId) async {
     try {
       final snapshot = await _db
           .collection("CourseDetails")
@@ -164,9 +140,9 @@ class CourseRepository extends GetxController {
     } catch (e) {
       throw 'Something went wrong';
     }
-  }
+  }*/
 
-  Future<List<CourseModel>> getAllCourseDocument(String? titleField) async {
+  /*Future<List<CourseModel>> getAllCourseDocument(String? titleField) async {
     try {
       final snapshot = await _db
           .collection("CourseDetails")
@@ -233,5 +209,5 @@ class CourseRepository extends GetxController {
     }
 
 
-  }
+  }*/
 }

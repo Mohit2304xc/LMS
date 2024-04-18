@@ -1,3 +1,4 @@
+import 'package:dummy1/Screen/MyCourses.dart';
 import 'package:dummy1/Screen/Service.dart';
 import 'package:dummy1/Widgets/Appbar/Appbar.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,11 @@ class ExamPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int currentQuestionIndex = 0;
+    String selectedAnswer = '';
+    double totalScore = 0;
     final controller = Get.put(QuestionController());
+    final service = Get.put(Service());
     return Scaffold(
       appBar: AppbarMenu(
         title: Text(
@@ -37,9 +42,75 @@ class ExamPage extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             final questions = snapshot.data!;
-            return ExamScreen(
-              questions: questions,
-              title: examTitle,
+            print("$questions s");
+            if (questions.isEmpty) {
+              return const Center(
+                child: Text('No questions available.'),
+              );
+            }
+            final question = questions[currentQuestionIndex];
+
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Question ${currentQuestionIndex + 1}:',
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(question.question),
+                  const SizedBox(height: 16),
+                  ...question.options.map(
+                        (option) => RadioListTile<String>(
+                      title: Text(option),
+                      value: option,
+                      groupValue: selectedAnswer,
+                      onChanged: (value) {
+                            () {
+                          selectedAnswer = value!;
+                          totalScore = controller.answerQuestion(
+                              question, selectedAnswer, totalScore);
+                        };
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (currentQuestionIndex < questions.length - 1) {
+                        currentQuestionIndex++;
+                      } else {
+                        double result = totalScore / questions.length * 100;
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Exam Result'),
+                            content: Text('Your score: $result%'),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  final data =
+                                  await service.createPDF(examTitle);
+                                  service.savePdfFile(
+                                      "${examTitle}Certificate", data);
+                                },
+                                child: const Center(child: Text('Continue')),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      print('Selected Answers: $selectedAnswer');
+                    },
+                    child: Text(currentQuestionIndex < questions.length - 1
+                        ? 'Next Question'
+                        : 'Finish'),
+                  ),
+                ],
+              ),
             );
           }
         },
@@ -84,16 +155,16 @@ class _ExamScreenState extends State<ExamScreen> {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Text(question.questionText),
+          Text(question.question),
           const SizedBox(height: 16),
           ...question.options.map(
-            (option) => RadioListTile<String>(
+                (option) => RadioListTile<String>(
               title: Text(option),
               value: option,
               groupValue: selectedAnswer,
               onChanged: (value) {
                 setState(
-                  () {
+                      () {
                     selectedAnswer = value!;
                     totalScore = controller.answerQuestion(
                         question, selectedAnswer, totalScore);

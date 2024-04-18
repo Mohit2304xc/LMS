@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dummy1/Repository/AuthenticationRepository.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -11,7 +11,7 @@ import 'package:pdf/widgets.dart' as pw;
 class Service extends GetxController {
   static Service get instance => Get.find();
 
-  Future<String> getUserName() async {
+  /*Future<String> getUserName() async {
     final currentUserUID = AuthenticationRepository.instance.authUser?.uid;
     if (currentUserUID != null) {
       final userDoc = await FirebaseFirestore.instance
@@ -23,7 +23,7 @@ class Service extends GetxController {
       return '$firstName $lastName';
     }
     return '';
-  }
+  }*/
 
   Future<Uint8List> createPDF(String title) async {
     final pdf = pw.Document();
@@ -31,7 +31,7 @@ class Service extends GetxController {
         .load('assets/images/Blue  Professional Certificate of Completion.png');
     final Uint8List bytes = imageData.buffer.asUint8List();
     const PdfColor whiteColor = PdfColor.fromInt(00000);
-    final fullName = await getUserName();
+    //final fullName = await getUserName();
     final currentDate = DateTime.now();
     final ByteData image = await rootBundle.load('assets/images/logo.png');
     final Uint8List byte = image.buffer.asUint8List();
@@ -73,7 +73,7 @@ class Service extends GetxController {
                   ),
                   pw.SizedBox(height: 20),
                   pw.Text(
-                    fullName,
+                    "fullName",
                     maxLines: 1,
                     style: pw.TextStyle(
                       fontSize: 30,
